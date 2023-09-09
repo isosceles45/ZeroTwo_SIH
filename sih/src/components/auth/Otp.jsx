@@ -9,7 +9,10 @@ import { auth } from "../../config/firebase.config";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { toast, Toaster } from "react-hot-toast";
 
+import { useNavigate } from "react-router-dom";
+
 const Otp = () => {
+  const navigate = useNavigate();
   const [otp, setOtp] = useState("");
   const [ph, setPh] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,13 +20,6 @@ const Otp = () => {
   const [user, setUser] = useState(null);
 
   function onCaptchVerify() {
-    // if (!window.recaptchaVerifier) {
-    //   window.recaptchaVerifier = new RecaptchaVerifier(
-    //     auth,
-    //     "recaptcha-container",
-    //     {}
-    //   );
-    // }
     window.recaptchaVerifier = new RecaptchaVerifier(
       auth,
       "recaptcha-container",
@@ -70,6 +66,7 @@ const Otp = () => {
       .then(async (res) => {
         console.log(res);
         setUser(res.user);
+        navigate("/home");
         setLoading(false);
       })
       .catch((err) => {
