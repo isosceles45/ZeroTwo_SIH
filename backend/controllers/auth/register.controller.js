@@ -6,18 +6,23 @@ dotenv.config();
 const bcryptSalt = bcrypt.genSaltSync(10);
 const registerController = async (req, res) => {
   console.log("register controller");
-  const { username, password, phoneNumber } = req.body;
+  const { fname, lname, phoneNumber, email, gender, serviceLookingFor } =
+    req.body;
   try {
-    const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
+    const hashedPhone = bcrypt.hashSync(phoneNumber, bcryptSalt);
     const createdUser = await User.create({
-      username,
-      password: hashedPassword,
-      phoneNumber,
+      fname,
+      lname,
+      phoneNumber: hashedPhone,
+      email,
+      gender,
+      serviceLookingFor,
     });
     const token = jwt.sign(
       {
         userId: createdUser._id,
-        username,
+        fname,
+        isServiceProvider: createdUser.isServiceProvider,
       },
       process.env.JWT_SECRET
     );
@@ -29,7 +34,8 @@ const registerController = async (req, res) => {
       .status(201)
       .json({
         id: createdUser._id,
-        username,
+        fname,
+        isServiceProvider: createdUser.isServiceProvider,
       });
   } catch (err) {
     res.status(400).json(err);

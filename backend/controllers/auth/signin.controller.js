@@ -3,19 +3,31 @@ import jwt from "jsonwebtoken";
 import User from "../../models/user.model.js";
 
 const LoginController = async (req, res) => {
-  const { username, password } = req.body;
-  const foundUser = await User.findOne({ username });
+  const { phoneNumber } = req.body;
+  const allUsers = await User.find({});
+  let passOk;
+  let foundUser;
+  for (let i = 0; i < allUsers.length; i++) {
+    console.log(allUsers[i].phoneNumber);
+    passOk = bcrypt.compareSync(phoneNumber, allUsers[i].phoneNumber);
+    console.log(passOk);
+    if (passOk === true) {
+      foundUser = allUsers[i];
+      console.log(foundUser);
+      break;
+    }
+  }
+  //foundUser = await User.findOne({ phoneNumber: passOk });
   if (!foundUser) {
     return res.status(400).json("User not found");
   }
-  const passOk = bcrypt.compareSync(password, foundUser.password);
   if (!passOk) {
     res.status(401).json("Password incorrect");
   }
   jwt.sign(
     {
       userId: foundUser._id,
-      username,
+      fname: foundUser.fname,
       isServiceProvider: foundUser.isServiceProvider,
     },
     process.env.JWT_SECRET,
@@ -37,6 +49,7 @@ const LoginController = async (req, res) => {
         });
     }
   );
+  return res.status(200).json(foundUser);
 };
 
 export default LoginController;

@@ -2,12 +2,17 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 
+import { useDispatch, useSelector } from "react-redux";
+import { setUserDetails } from "../../context/userSlice";
+
 const socket = io("http://localhost:5000", {
   withCredentials: true,
   secure: true,
 });
 
 const Login = () => {
+  const user = useSelector((state) => state.userInfo.info);
+  const dispatch = useDispatch();
   const [users, setUser] = useState([]);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +24,7 @@ const Login = () => {
       username: username.value,
       password: password.value,
     });
+    dispatch(setUserDetails(res.data));
     alert(res.status);
     console.log(res.data);
     socket.emit("online", { ...res.data });
@@ -27,7 +33,6 @@ const Login = () => {
   };
 
   useEffect(() => {
-    
     socket.on("onlinef", (user) => {
       console.log("New user connected to socket");
       console.log(user);

@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
-  username: {
+  fname: {
+    type: String,
+    required: true,
+  },
+  lname: {
     type: String,
     required: true,
   },
@@ -12,9 +16,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  password: {
+  gender: {
     type: String,
     required: true,
+  },
+  serviceLookingFor: {
+    type: String,
   },
   clientOf: {
     type: mongoose.Schema.Types.ObjectId,

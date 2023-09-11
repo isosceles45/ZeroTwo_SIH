@@ -8,16 +8,38 @@ import "react-phone-input-2/lib/style.css";
 import { auth } from "../../config/firebase.config";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { toast, Toaster } from "react-hot-toast";
+import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUserDetails } from "../../context/userSlice";
 
 const Otp = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [otp, setOtp] = useState("");
   const [ph, setPh] = useState("");
   const [loading, setLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [user, setUser] = useState(null);
+
+  const getUser = async () => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        phoneNumber: ph,
+      });
+      console.log(res);
+      if (res.status === 200) {
+        dispatch(setUserDetails(res.data));
+        alert("User already exists");
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  };
 
   function onCaptchVerify() {
     window.recaptchaVerifier = new RecaptchaVerifier(
@@ -60,13 +82,26 @@ const Otp = () => {
   }
 
   function onOTPVerify() {
+    console.log("phone", ph);
     setLoading(true);
     window.confirmationResult
       .confirm(otp)
       .then(async (res) => {
         console.log(res);
         setUser(res.user);
-        navigate("/home");
+        const result = await getUser();
+        if (result === true) {
+          setLoading(false);
+          navigate("/home", {
+            state: { phoneNumber: ph },
+            replace: true,
+          });
+          return;
+        }
+        navigate("/onboarding/register", {
+          state: { phoneNumber: ph },
+          replace: true,
+        });
         setLoading(false);
       })
       .catch((err) => {

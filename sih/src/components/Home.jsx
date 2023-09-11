@@ -8,22 +8,15 @@ const Home = () => {
 
   const handleSubmit = () => {
     console.log("clicked");
-    dispatch(
-      setUserDetails({
-        name: "Himanshu Goyal",
-        email: "h@123",
-        isProvider: true,
-      })
-    );
   };
-  console.log(user);
-  localStorage.setItem("user", JSON.stringify(user));
 
   return (
     <div>
       This is real home page
-      <h1>Name {user.name}</h1>
-      <h1>isProvider {user.isProvider.toString()}</h1>
+      <h1>Name {user.fname}</h1>
+      <h1>Phone {user.phoneNumber}</h1>
+      <h1>email {user.email}</h1>
+      <h1>isProvider {user.isServiceProvider.toString()}</h1>
       <button onClick={handleSubmit}>Update User Info</button>
     </div>
   );
