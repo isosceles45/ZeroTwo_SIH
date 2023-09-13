@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const user = JSON.parse(localStorage.getItem("user"));
-console.log("user", user);
+// console.log("user", user);
 
 const temp = {
   email: "hiteshgoyal943@gmail.com",
@@ -30,7 +30,7 @@ export const userSlice = createSlice({
   },
   reducers: {
     setUserDetails: (state, action) => {
-      console.log("action", action.payload);
+      // console.log("action", action.payload);
       state.info = action.payload;
       localStorage.setItem("user", JSON.stringify(action.payload));
     },

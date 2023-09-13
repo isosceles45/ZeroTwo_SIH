@@ -9,6 +9,7 @@ import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
 import Home from "./components/Home";
 import Onboarding from "./components/Onboarding";
+import Applay from "./components/Applay";
 
 const socket = io("http://localhost:5000", {
   withCredentials: true,
@@ -57,6 +58,7 @@ function App() {
       element: <Layout />,
       children: [
         { path: "/home", element: <Home /> },
+        { path: "/applay-advocate", element: <Applay /> },
         { path: "/lemon", element: <h1>lemon</h1> },
       ],
     },
