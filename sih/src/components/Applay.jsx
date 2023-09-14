@@ -3,13 +3,15 @@ import { useSelector } from "react-redux";
 import upload from "../context/upload";
 import { toast, Toaster } from "react-hot-toast";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const inputStyle =
   "py-2 px-4  rounded-[4px] border-2 border-blue-gray-200  border-gray-400 outline-none font-sans text-sm font-normal text-gray-600 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-emerald-500 placeholder-shown:border-emerald-500 focus:border-2 focus:border-emerald-500  focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50 ";
 
 const Applay = () => {
+  const navigate = useNavigate();
   const currUser = useSelector((state) => state.userInfo.info);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [lawyer, setLawyer] = useState({
     id: currUser._id || currUser.id,
@@ -47,16 +49,27 @@ const Applay = () => {
   };
 
   const handleSubmit = async () => {
-    const res = await axios.post(
-      "http://localhost:5000/api/lawyers/apply",
-      lawyer
-    );
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/lawyers/apply",
+        lawyer
+      );
 
-    console.log(res.data);
-    if (res.status === 200) {
-      toast.success("Applied Successfully");
-    } else {
-      toast.error("Something went wrong");
+      console.log(res.data);
+      if (res.status === 200) {
+        toast.success("Applied Successfully");
+      } else {
+        toast.error("Something went wrong");
+      }
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000);
+    } catch (err) {
+      console.log(err);
+      toast.error("You have already applied");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000);
     }
   };
 

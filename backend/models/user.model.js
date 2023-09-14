@@ -37,6 +37,12 @@ const UserSchema = new mongoose.Schema({
     ref: "advocate",
     default: false,
   },
+  appointment: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "appointment",
+    },
+  ],
 });
 
 const userModel = mongoose.model("user", UserSchema);

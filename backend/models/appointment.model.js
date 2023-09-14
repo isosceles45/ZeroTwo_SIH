@@ -27,7 +27,7 @@ const AppointmentSchema = new mongoose.Schema(
     },
     reason: {
       type: String,
-      required: false,
+      required: true,
     },
     description: {
       type: String,

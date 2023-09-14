@@ -36,6 +36,14 @@ export const ApplayLawyer = async (req, res) => {
   if (!userInfo) {
     return res.status(400).json("User not found");
   }
+  const isAlreadyApplied = await advocateModel.findOne({ id });
+  if (isAlreadyApplied) {
+    return res.status(400).json("User is already applied");
+  }
+  if (userInfo.isServiceProvider) {
+    return res.status(400).json("User is already a service provider");
+  }
+
   const serviceProvider = new advocateModel({
     id,
     name,

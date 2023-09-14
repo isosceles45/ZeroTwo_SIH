@@ -81,15 +81,12 @@ const AdvocateSchema = new mongoose.Schema(
       ],
       required: false,
     },
-    appointments: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "appointment",
-        },
-      ],
-      required: false,
-    },
+    appointments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "appointment",
+      },
+    ],
     address: {
       type: String,
       required: true,

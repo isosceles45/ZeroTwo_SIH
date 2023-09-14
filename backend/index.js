@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth/auth.routes.js";
 import lawyerRoutes from "./routes/lawyers.routes.js";
 import reviewRoutes from "./routes/review.routes.js";
 import userModel from "./models/user.model.js";
+import appintmentRoutes from "./routes/appointment.route.js";
 
 const PORT = 5000;
 const app = express();
@@ -29,7 +30,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/lawyers", lawyerRoutes);
 app.use("/api/write-review", reviewRoutes);
-// app.post("/api/applay/:userId", Applay);
+app.use("/api/appointment", appintmentRoutes);
 
 const server = app.listen(PORT, () => {
   connect();
