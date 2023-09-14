@@ -10,6 +10,9 @@ import Footer from "./components/common/Footer";
 import Home from "./components/Home";
 import Onboarding from "./components/Onboarding";
 import Applay from "./components/Applay";
+import SingleLawyer from "./components/SingleLawyer";
+import Lawyers from "./components/Lawyers";
+import VideoMeeting from "./components/VideoMeeting";
 
 const socket = io("http://localhost:5000", {
   withCredentials: true,
@@ -24,7 +27,6 @@ function App() {
       <div className="app">
         <Navbar />
         <Outlet />
-        <Footer />
       </div>
     );
   };
@@ -59,8 +61,19 @@ function App() {
       children: [
         { path: "/home", element: <Home /> },
         { path: "/applay-advocate", element: <Applay /> },
-        { path: "/lemon", element: <h1>lemon</h1> },
+        {
+          path: "/lawyers",
+          element: <Lawyers />,
+        },
+        {
+          path: "/SingleLawyer/:id",
+          element: <SingleLawyer />,
+        },
       ],
+    },
+    {
+      path: "/video",
+      element: <VideoMeeting />,
     },
   ]);
 

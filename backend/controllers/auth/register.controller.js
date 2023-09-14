@@ -32,11 +32,7 @@ const registerController = async (req, res) => {
         secure: true,
       })
       .status(201)
-      .json({
-        id: createdUser._id,
-        fname,
-        isServiceProvider: createdUser.isServiceProvider,
-      });
+      .json(createdUser);
   } catch (err) {
     res.status(400).json(err);
   }

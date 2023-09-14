@@ -3,7 +3,12 @@ import { Server } from "socket.io";
 import cors from "cors";
 import connect from "./connect.js";
 import cookieParser from "cookie-parser";
+import ws from "ws";
+import jwt from "jsonwebtoken";
 import authRoutes from "./routes/auth/auth.routes.js";
+import lawyerRoutes from "./routes/lawyers.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
+import userModel from "./models/user.model.js";
 
 const PORT = 5000;
 const app = express();
@@ -11,7 +16,6 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    secure: true,
     origin: "http://localhost:3000",
   })
 );
@@ -23,6 +27,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/lawyers", lawyerRoutes);
+app.use("/api/write-review", reviewRoutes);
+// app.post("/api/applay/:userId", Applay);
 
 const server = app.listen(PORT, () => {
   connect();
@@ -30,6 +37,7 @@ const server = app.listen(PORT, () => {
 });
 
 // socket.io
+// websockets server //
 const io = new Server(server, {
   secure: true,
   cors: {
@@ -39,19 +47,46 @@ const io = new Server(server, {
   },
 });
 
-const users = [];
-io.on("connection", (socket) => {
-  socket.on(
-    "online",
-    (user) => {
-      console.log(user);
-      users.push(user);
-      console.log(users);
-    },
-    socket.broadcast.emit("onlinef", users)
-  );
+io.use((socket, next) => {
+  const fname = socket.handshake.auth.fname;
+  if (!fname) return next(new Error("Authentication error"));
+  // jwt.verify(token, "secret", (err, decoded) => {
+  //   if (err) return next(new Error("Authentication error"));
+  //   socket.decoded = decoded;
+  //   next();
+  // });
+  socket.fname = fname;
+  socket.userId = socket.handshake.auth.userId;
+  next();
+});
+
+io.on("connection", async (socket) => {
+  const users = [];
+
+  for (let [id, socket] of io.of("/").sockets) {
+    users.push({
+      userId: socket.userId,
+      fname: socket.fname,
+    });
+  }
+
+  socket.emit("users", users);
+
+  socket.emit("session", {
+    userId: socket.userId,
+    fname: socket.fname,
+  });
+
+  socket.broadcast.emit("user connected", {
+    userId: socket.userId,
+    fname: socket.fname,
+  });
 
   socket.on("disconnect", () => {
-    console.log("disconnected");
+    console.log("user disconnected", socket.userId, socket.fname);
+    socket.broadcast.emit("user disconnected", {
+      userId: socket.userId,
+      fname: socket.fname,
+    });
   });
 });

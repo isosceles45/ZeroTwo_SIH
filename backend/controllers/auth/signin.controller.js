@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../../models/user.model.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const LoginController = async (req, res) => {
   const { phoneNumber } = req.body;
@@ -24,32 +26,22 @@ const LoginController = async (req, res) => {
   if (!passOk) {
     res.status(401).json("Password incorrect");
   }
-  jwt.sign(
+
+  const token = jwt.sign(
     {
       userId: foundUser._id,
       fname: foundUser.fname,
       isServiceProvider: foundUser.isServiceProvider,
     },
-    process.env.JWT_SECRET,
-    {},
-    (err, token) => {
-      if (err) {
-        res.status(500).json(err);
-      }
-      res
-        .cookie("token", token, {
-          sameSite: "none",
-          secure: true,
-        })
-        .status(200)
-        .json({
-          id: foundUser._id,
-          username,
-          isServiceProvider: foundUser.isServiceProvider,
-        });
-    }
+    process.env.JWT_SECRET
   );
-  return res.status(200).json(foundUser);
+  res
+    .cookie("token", token, {
+      sameSite: "none",
+      secure: true,
+    })
+    .status(200)
+    .json(foundUser);
 };
 
 export default LoginController;
