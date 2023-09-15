@@ -16,6 +16,7 @@ import VideoMeeting from "./components/VideoMeeting";
 import Menu from "./components/Admin/Menu/Menu";
 import "./styles/global.scss";
 import Appointments from "./components/Admin/Appointments";
+import Main from "./pages/Main";
 
 const socket = io("http://localhost:5000", {
   withCredentials: true,

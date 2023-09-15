@@ -1,0 +1,6 @@
+.law-bg {
+  height: 77vh;
+  background-image: url(../../../public/law-bg.jpg);
+  background-position: center; /* This sets the image position to the bottom */
+  background-size: cover;
+}

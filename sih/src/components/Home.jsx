@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails } from "../context/userSlice";
 import { Link } from "react-router-dom";
+import Main from "../pages/Main";
 import { io } from "socket.io-client";
 import _, { set } from "lodash";
+import axios from "axios";
 
 const socket = io("http://localhost:5000", {
   withCredentials: true,
@@ -18,12 +20,16 @@ const Home = () => {
   const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
-    socket.auth = { userId: user._id || user.id, fname: user.fname };
+    socket.auth = {
+      userId: user._id || user.id,
+      fname: user.fname,
+      isProvider: user.isServiceProvider.toString(),
+    };
     socket.connect();
     socket.on("users", (u) => {
       const messageArray = [];
-      for (const { userId, fname } of u) {
-        const newMessage = { type: "UserStatus", userId, fname };
+      for (const { userId, fname, isProvider } of u) {
+        const newMessage = { type: "UserStatus", userId, fname, isProvider };
         messageArray.push(newMessage);
       }
       setMessages([...messages, ...messageArray]);
@@ -31,20 +37,21 @@ const Home = () => {
       console.log("users", u);
     });
 
-    socket.on("session", ({ userId, fname }) => {
-      console.log("session", userId, fname);
-      setoUser({ userId, fname });
+    socket.on("session", ({ userId, fname, isProvider }) => {
+      console.log("session", userId, fname, isProvider);
+      setoUser({ userId, fname, isProvider });
     });
 
-    socket.on("user connected", ({ userId, fname }) => {
-      console.log("user connected", userId, fname);
-      setUsers([...users, { userId, fname }]);
+    socket.on("user connected", ({ userId, fname, isProvider }) => {
+      console.log("user connected", userId, fname, isProvider);
+      setUsers([...users, { userId, fname, isProvider }]);
     });
 
-    socket.on("user disconnected", ({ userId, fname }) => {
-      console.log("user disconnected", userId, fname);
+    socket.on("user disconnected", ({ userId, fname, isProvider }) => {
+      console.log("user disconnected", userId, fname, isProvider);
       setUsers(users.filter((user) => user.userId !== userId));
     });
+
     return () => {
       if (socket.readyState === 1) {
         socket.close();
@@ -52,29 +59,31 @@ const Home = () => {
     };
   }, [socket, messages]);
 
+  const getOnlineLawyers = async (uid) => {
+    console.log("getOnlineLawyeRS CALLED  ");
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/lawyers/lawyer/${uid}`
+      );
+      console.log("returned");
+      return res.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const userWithoutDuplicates = _.uniqBy(users, "userId");
   console.log("userWithoutDuplicates", userWithoutDuplicates);
+
   return (
     <div>
-      This is real home page
-      <h1>Name {user.fname}</h1>
-      <h1>Phone {user.phoneNumber}</h1>
-      <h1>email {user.email}</h1>
-      <h1>isProvider {user.isServiceProvider.toString()}</h1>
-      <button>Update User Info</button>
-      <button>
-        <Link to="/applay-advocate">Applay Lawyer</Link>
-      </button>
-      <div className="m-20">X</div>
-      <h1 className="bg-red-50 h-20 w-52">{ouser.fname}</h1>
-      {userWithoutDuplicates &&
-        userWithoutDuplicates.map((person) => {
-          return (
-            <div className="m-20">
-              <h1>{person.fname}</h1>
-            </div>
-          );
-        })}
+      {onlineUsers.map((user) => {
+        return (
+          <div>
+            <h1>{user.fname}</h1>
+          </div>
+        );
+      })}
+      <Main onlineLawyers={userWithoutDuplicates} />
     </div>
   );
 };

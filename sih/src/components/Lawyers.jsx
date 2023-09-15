@@ -1,21 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LawyerProfile from "./helpers/LawyerProfile";
 import TopRated from "./helpers/TopRated";
 import { Navigate, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const LawyerList = [1, 2, 3];
-const LawyerList2 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-const Lawyers = () => {
+const Lawyers = ({ onlineLawyers }) => {
+  console.log("online2", onlineLawyers);
+  const [onlineLawyersList, setOnlineLawyersList] = useState([]);
   const navigate = useNavigate();
+
+  const getOnlineLawyers = async (uid) => {
+    console.log("getOnlineLawyeRS CALLED  ");
+    try {
+      const res = await axios.post(`http://localhost:5000/api/lawyers/lawyer`, {
+        ids: uid,
+      });
+      console.log("returned");
+      return res.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    const uid = onlineLawyers.map((lawyer) => lawyer.userId);
+    getOnlineLawyers(uid).then((res) => {
+      console.log("res", res);
+      setOnlineLawyersList(res);
+      console.log("onlineLawyersList", onlineLawyersList);
+    });
+  }, [onlineLawyers]);
+
   return (
-    <div className="w-4/5  mx-auto flex flex-col items-center">
-      <div className="w-full flex justify-between  mb-4">
-        <h1 className="font-bold  text-2xl text-emerald-600">
-          Top Rated Lawyers
-        </h1>
-      </div>
-      <div class="carousel h-96 relative shadow-2xl bg-white w-full">
+    <div className="w-4/5 pt-52  mx-auto flex flex-col items-center">
+      <h1 className="font-bold text-gray-900  text-center text-4xl mb-10">
+        Top Rated Lawyers
+      </h1>
+
+      <div class="carousel h-96 relative shadow-3xl bg-white w-full">
         <div class="carousel-inner relative overflow-hidden w-full">
           {/* <!--Slide 1--> */}
           <input
@@ -95,67 +117,31 @@ const Lawyers = () => {
         </div>
       </div>
 
-      <div className="online w-full flex flex-col items-center justify-between mt-10">
-        <div className="w-full flex justify-between  mb-4">
-          <h1 className="text-xl font-bold text-emerald-600">Online Now</h1>
-          <h1 className="text-xs font-semibold flex items-center gap-2 ">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5 text-emerald-500"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-              />
-            </svg>
-            All
-          </h1>
-        </div>
-        <div className="grid grid-cols-5 gap-3">
-          {LawyerList.map((lawyer) => (
-            <LawyerProfile />
-          ))}
+      <div className="online w-full  pt-48 flex flex-col items-center justify-between mt-10">
+        <h1 className="font-bold text-gray-900  text-center text-4xl mb-10">
+          Online Service Providers
+        </h1>
+        <div className="w-full flex justify-center mb-4 items-center">
+          <div className="grid grid-cols-3 gap-x-12">
+            {onlineLawyersList.length > 0 &&
+              onlineLawyersList.map(
+                (lawyer) => lawyer.isServiceProvider && <h1>Helli</h1>
+              )}
+          </div>
         </div>
       </div>
 
-      <div className="online w-full flex flex-col items-center justify-between mt-8">
-        <div className="w-full flex justify-between  mb-4">
-          <h1 className="text-xl font-bold text-emerald-600">
-            Nearby Service Providers
-          </h1>
-          <h1 className="text-xs font-semibold flex items-center gap-2 ">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5 text-emerald-500"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-              />
-            </svg>
-            All
-          </h1>
-        </div>
-        <div className="grid grid-cols-5 gap-3">
-          {LawyerList2.map((lawyer) => (
-            <LawyerProfile />
-          ))}
-        </div>
+      <div className="online w-full pt-12 flex flex-col items-center justify-between mt-8">
+        <h1 className="font-bold text-gray-900  text-center text-4xl mb-8">
+          Nearby Service Providers
+        </h1>
+        <div className="w-full flex justify-between mb-4"></div>
+        <div className="grid grid-cols-5 gap-5"></div>
       </div>
 
       <button
         onClick={() => <Navigate to="/lawyers" />}
-        className="my-8 flex items-center justify-center gap-2 bg-emerald-600 text-center px-4 py-2 rounded-full text-white w-[180px] h-9 hover:text-white hover:bg-emerald-600 duration-700 ease-in-out"
+        className="mt-12 mb-4 flex items-center justify-center gap-2 bg-blue-900 text-center px-4 py-4 rounded-full text-white w-[180px] hover:text-white hover:bg-emerald-600 duration-700 ease-in-out"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -174,6 +160,40 @@ const Lawyers = () => {
 
         <h2 className="font-bold text-sm text-center">Browse All</h2>
       </button>
+      <footer class="w-full bg-white rounded-lg shadow p-5">
+        <hr />
+        <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+          <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+            © 2023{" "}
+            <a href="https://flowbite.com/" class="hover:underline">
+              Flowbite™
+            </a>
+            . All Rights Reserved.
+          </span>
+          <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+            <li>
+              <a href="#" class="mr-4 hover:underline md:mr-6 ">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="#" class="mr-4 hover:underline md:mr-6">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="#" class="mr-4 hover:underline md:mr-6">
+                Licensing
+              </a>
+            </li>
+            <li>
+              <a href="#" class="hover:underline">
+                Contact
+              </a>
+            </li>
+          </ul>
+        </div>
+      </footer>
     </div>
   );
 };

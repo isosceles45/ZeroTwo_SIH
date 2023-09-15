@@ -23,11 +23,14 @@ const Applay = () => {
     specialization: [],
     gender: currUser?.gender || "",
     courtPractice: [],
-    certificate: null,
+    pass_certificate: null,
+    bar_certificate: null,
     serviceType: [],
+    enrollment_number: "",
   });
 
-  const handleFile = async (e) => {
+  const handleFile1 = async (e) => {
+    e.preventDefault();
     setLoading(true);
     const files = e.target?.files;
     if (files?.length > 0) {
@@ -38,7 +41,26 @@ const Applay = () => {
       data.append("upload_preset", "fiverr");
       const url = await upload(data);
       console.log("url", url);
-      setLawyer((prev) => ({ ...prev, certificate: url }));
+      setLawyer((prev) => ({ ...prev, pass_certificate: url }));
+      console.log("Lawyer", lawyer);
+    }
+    toast.success("File Uploaded");
+  };
+
+  const handleFile2 = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const files = e.target?.files;
+    if (files?.length > 0) {
+      const data = new FormData();
+      for (const file of files) {
+        data.append("file", file);
+      }
+      data.append("upload_preset", "fiverr");
+      const url = await upload(data);
+      console.log("url", url);
+      setLawyer((prev) => ({ ...prev, bar_certificate: url }));
+      console.log("Lawyer", lawyer);
     }
     toast.success("File Uploaded");
   };
@@ -49,6 +71,7 @@ const Applay = () => {
   };
 
   const handleSubmit = async () => {
+    console.log("Lawyer", lawyer);
     try {
       const res = await axios.post(
         "http://localhost:5000/api/lawyers/apply",
@@ -66,9 +89,9 @@ const Applay = () => {
       }, 2000);
     } catch (err) {
       console.log(err);
-      toast.error("You have already applied");
+      toast.error(err.message);
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/home");
       }, 2000);
     }
   };
@@ -240,6 +263,18 @@ const Applay = () => {
                     />
                   </div>
 
+                  <div class="col-span-2">
+                    <label for="city">Enrollment Number</label>
+                    <input
+                      type="text"
+                      name="enrollment_number"
+                      id="city"
+                      onChange={(e) => onHandleChange(e.target)}
+                      class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      placeholder=""
+                    />
+                  </div>
+
                   <div className="flex">
                     <div className="mt-4 flex items-center">
                       <label
@@ -281,26 +316,29 @@ const Applay = () => {
                         <option value="High Court">High Court</option>
                         <option value="Supreme Court">Supreme Court</option>
                         <option value="District Court">District Court</option>
+                        <option value="All">All</option>
                       </select>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div class="text-gray-600 flex flex-col justify-between">
-                <div class="md:col-span-1">
+                <div class="md:col-span-1 mt-4">
                   <label for="specialization">Add Specialization</label>
                   <textarea
                     type="text"
                     name="specialization"
                     onChange={(e) => onHandleChange(e.target)}
                     id="specialization"
-                    class="transition-all h-[160px] flex items-center  border mt-1 rounded px-4 w-full bg-gray-50"
+                    class="transition-all h-[60px] flex items-center  border mt-1 rounded px-4 w-full bg-gray-50"
                     placeholder="tax law, criminal law, etc."
                   />
                 </div>
+              </div>
+
+              <div class="text-gray-600 flex flex-col justify-between">
                 <div class="md:col-span-1 mt-2">
-                  <label for="specialization py-2">Upload Certificate</label>
+                  <label for="specialization py-2">
+                    Upload Passing Certificate
+                  </label>
 
                   <div class="flex items-center justify-center w-full">
                     <label
@@ -333,8 +371,49 @@ const Applay = () => {
                       </div>
                       <input
                         id="dropzone-file"
-                        name="certificate"
-                        onChange={handleFile}
+                        name="pass_certificate"
+                        onChange={handleFile1}
+                        type="file"
+                        class="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div class="md:col-span-1 mt-2">
+                  <label for="specialization py-2">
+                    Upload BAR COUNCIL Certificate
+                  </label>
+
+                  <div class="flex items-center justify-center w-full">
+                    <label class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                      <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                        <svg
+                          class="w-6 h-6 mb-2 text-gray-500 dark:text-gray-400"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 20 16"
+                        >
+                          <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                          />
+                        </svg>
+                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span class="font-semibold">Click to upload</span> or
+                          drag and drop
+                        </p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                          SVG, PNG, JPG or GIF (MAX. 800x400px)
+                        </p>
+                      </div>
+                      <input
+                        name="bar_certificate"
+                        onChange={handleFile2}
                         type="file"
                         class="hidden"
                       />
