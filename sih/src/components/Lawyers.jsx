@@ -123,9 +123,10 @@ const Lawyers = ({ onlineLawyers }) => {
         </h1>
         <div className="w-full flex justify-center mb-4 items-center">
           <div className="grid grid-cols-3 gap-x-12">
-            {onlineLawyersList.length > 0 &&
+            {onlineLawyersList?.length > 0 &&
               onlineLawyersList.map(
-                (lawyer) => lawyer.isServiceProvider && <h1>Helli</h1>
+                (lawyer) =>
+                  lawyer.isServiceProvider && <LawyerProfile lawyer={lawyer} />
               )}
           </div>
         </div>

@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LawyerProfile = ({ lawyer }) => {
+  const [currLawyer, setCurrLawyer] = useState({});
+  console.log("lawyer", lawyer);
   const navigate = useNavigate();
-  const handleClick = () => {
-    navigate("/SingleLawyer/1");
+  const handleClick = (id) => {
+    navigate(`/SingleLawyer/${id}`, { state: { lawyer: currLawyer } });
   };
+
+  useEffect(() => {
+    const getAllInfo = async (id) => {
+      const res = await axios.get(
+        `http://localhost:5000/api/lawyers/info/${id}`
+      );
+      console.log("res", res);
+      setCurrLawyer(res.data[0]);
+    };
+
+    getAllInfo(lawyer._id);
+  }, []);
+
   return (
     <div
       className="flex flex-col items-center shadow-md w-60 
@@ -19,9 +35,11 @@ const LawyerProfile = ({ lawyer }) => {
         className="h-28 w-28 rounded-full object-cover"
       />
       <h1 className="w-full text-center text-xl font-bold text-gray-800 pt-3">
-        Lawyer Name
+        {currLawyer.name}
       </h1>
-      <p className="text-gray-500 text-sm font-thin py-1">Lawyer Type</p>
+      <p className="text-gray-500 text-sm font-thin py-1">
+        {currLawyer.specialization}
+      </p>
       <div className="flex h-5 mt-1">
         <svg
           class="w-3 h-3 text-blue-600 mr-1"
@@ -52,7 +70,7 @@ const LawyerProfile = ({ lawyer }) => {
         </svg>
       </div>
       <button
-        onClick={handleClick}
+        onClick={() => handleClick(currLawyer._id)}
         className="mt-2 flex items-center justify-center gap-2 border border-blue-600 text-center px-4 py-2 rounded-full text-blue-600 my-2 w-[180px] h-9 hover:text-white hover:bg-blue-600 duration-700 ease-in-out"
       >
         <svg

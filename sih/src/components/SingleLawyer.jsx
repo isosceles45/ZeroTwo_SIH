@@ -4,8 +4,11 @@ import Buttons from "./helpers/Buttons";
 import Rating from "./helpers/Rating";
 import Review from "./helpers/Review";
 import ClinicCard from "./helpers/ClinicCard";
+import { useLocation } from "react-router-dom";
 
 const SingleLawyer = () => {
+  const location = useLocation();
+  console.log("location", location.state);
   return (
     <div className="relative h-screen w-screen ">
       <img
@@ -23,19 +26,29 @@ const SingleLawyer = () => {
             alt=""
           />
           <div className="flex flex-col justify-center items-center mt-24 ">
-            <div className="font-bold text-xl">Dr. Stephan Munoz</div>
+            <div className="font-bold text-xl">
+              {location.state.lawyer.name}
+            </div>
             <div className="font-bold text-sm text-gray-500">
-              📍 New York, USA
+              📍 {location.state.lawyer.city}
             </div>
             <div className="flex flex-wrap gap-2 my-4 p-2 w-[280px]">
+              {location.state.lawyer.specialization.map((spec) => (
+                <div className="rounded-full bg-gray-200 px-2 py-1 text-sm text-gray-500 font-semibold">
+                  {spec}
+                </div>
+              ))}
               <div className="rounded-full bg-gray-200 px-2 py-1 text-sm text-gray-500 font-semibold">
-                General Cardiology
+                Law
               </div>
               <div className="rounded-full bg-gray-200 px-2 py-1 text-sm text-gray-500 font-semibold">
-                Echocardiology
+                Finance
               </div>
               <div className="rounded-full bg-gray-200 px-2 py-1 text-sm text-gray-500 font-semibold">
-                General Cardiology
+                real Estate
+              </div>
+              <div className="rounded-full bg-gray-200 px-2 py-1 text-sm text-gray-500 font-semibold">
+                Criminal Defense
               </div>
             </div>
 
@@ -85,6 +98,28 @@ const SingleLawyer = () => {
           <div className="w-full bg-white shadow-md px-8 py-4 my-2">
             <h1 className="text-lg font-bold mb-4">Treatments</h1>
             <div className="grid grid-cols-2 gap-3">
+              {location.state.lawyer.serviceType.map((treatment) => {
+                return (
+                  <div className="flex gap-2 items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+                      />
+                    </svg>
+
+                    <span className="">{treatment} - LLB</span>
+                  </div>
+                );
+              })}
               <div className="flex gap-2 items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -101,25 +136,7 @@ const SingleLawyer = () => {
                   />
                 </svg>
 
-                <span className="">Cardiology</span>
-              </div>
-              <div className="flex gap-2 items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
-                  />
-                </svg>
-
-                <span className="">Cardiology</span>
+                <span className="">66% success rate</span>
               </div>{" "}
               <div className="flex gap-2 items-center">
                 <svg
@@ -137,43 +154,7 @@ const SingleLawyer = () => {
                   />
                 </svg>
 
-                <span className="">Cardiology</span>
-              </div>{" "}
-              <div className="flex gap-2 items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
-                  />
-                </svg>
-
-                <span className="">Cardiology</span>
-              </div>{" "}
-              <div className="flex gap-2 items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
-                  />
-                </svg>
-
-                <span className="">Cardiology</span>
+                <span className="">{"Verifed Profile"}</span>
               </div>
             </div>
           </div>
