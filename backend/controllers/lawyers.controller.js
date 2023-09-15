@@ -12,6 +12,25 @@ export const getLawyerByCity = async (req, res) => {
   res.json(lawyer);
 };
 
+export const getLawyerById = async (req, res) => {
+  const { ids } = req.body;
+  try {
+    const lawyer = await userModel.find({ _id: { $in: ids } });
+    res.json(lawyer);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+};
+
+export const getAllLawyersInfo = async (req, res) => {
+  const { id } = req.params;
+  const lawyers = await advocateModel.find({
+    id: id,
+  });
+  console.log(lawyers);
+  res.json(lawyers);
+};
+
 export const ApplayLawyer = async (req, res) => {
   console.log("hello 1");
   const {
@@ -29,7 +48,9 @@ export const ApplayLawyer = async (req, res) => {
     gender,
     courtPractice,
     address,
-    certificate,
+    pass_certificate,
+    bar_certificate,
+    enrollment_number,
   } = req.body;
   const userInfo = await userModel.findById(id);
   console.log("hello 2");
@@ -59,10 +80,22 @@ export const ApplayLawyer = async (req, res) => {
     serviceType,
     specialization,
     address,
-    certificate,
+    pass_certificate,
+    bar_certificate,
+    enrollment_number,
   });
-  console.log("hello 3");
+  console.log(req.body);
   await serviceProvider.save();
   await userInfo.save();
   return res.status(200).json(serviceProvider);
+};
+
+export const getUserById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await userModel.findById(id);
+    res.json(user);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 };

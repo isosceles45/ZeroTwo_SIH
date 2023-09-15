@@ -48,9 +48,19 @@ const AdvocateSchema = new mongoose.Schema(
       required: false,
       default: 4,
     },
-    certificate: {
+    pass_certificate: {
+      type: String,
+      required: false,
+      default: "https://live.staticflickr.com/1402/1287047691_d50f413782_z.jpg",
+    },
+    enrollment_number: {
       type: String,
       required: true,
+    },
+    bar_certificate: {
+      type: String,
+      required: false,
+      default: "https://pbs.twimg.com/media/FMXX-M0aAAUl24k.jpg",
     },
     profileLikes: {
       type: Number,
@@ -64,7 +74,7 @@ const AdvocateSchema = new mongoose.Schema(
     },
     courtPractice: {
       type: [String],
-      enum: ["Supreme Court", "High Court", "District Court"],
+      enum: ["Supreme Court", "High Court", "District Court", "All"],
       required: true,
     },
     serviceType: {

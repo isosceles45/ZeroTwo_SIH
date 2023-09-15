@@ -65,22 +65,26 @@ io.on("connection", async (socket) => {
   const users = [];
 
   for (let [id, socket] of io.of("/").sockets) {
+    console.log("socket", socket);
     users.push({
       userId: socket.userId,
       fname: socket.fname,
+      isProvider: socket.isProvider,
     });
   }
-
+  console.log("users", users);
   socket.emit("users", users);
 
   socket.emit("session", {
     userId: socket.userId,
     fname: socket.fname,
+    isProvider: socket.isProvider,
   });
 
   socket.broadcast.emit("user connected", {
     userId: socket.userId,
     fname: socket.fname,
+    isProvider: socket.isProvider,
   });
 
   socket.on("disconnect", () => {
@@ -88,6 +92,7 @@ io.on("connection", async (socket) => {
     socket.broadcast.emit("user disconnected", {
       userId: socket.userId,
       fname: socket.fname,
+      isProvider: socket.isProvider,
     });
   });
 });
