@@ -76,13 +76,6 @@ const Home = () => {
 
   return (
     <div>
-      {onlineUsers.map((user) => {
-        return (
-          <div>
-            <h1>{user.fname}</h1>
-          </div>
-        );
-      })}
       <Main onlineLawyers={userWithoutDuplicates} />
     </div>
   );
