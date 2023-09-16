@@ -99,3 +99,27 @@ export const getUserById = async (req, res) => {
     res.status(400).json(err);
   }
 };
+
+export const getApproval = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const applier = await userModel.findByIdAndUpdate(id, {
+      isServiceProvider: true,
+    })
+    res.json(applier);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+}
+
+export const getRejection = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const applier = await userModel.findByIdAndUpdate(id, {
+      isServiceProvider: false,
+    })
+    res.json(applier);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+}
